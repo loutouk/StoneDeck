@@ -35,18 +35,21 @@ import java.util.Map;
 
 public class CartesActivity extends AppCompatActivity {
 
+    // We can't pass too much cards by the intent because the buffer has a limited size
+    private final int MAX_CARDS_TO_PASS = 500;
     // As the purpose of this app is to search card and create decks, the main search is by class
     // Though differents request are available on https://market.mashape.com/omgvamp/hearthstone
-    private final String JSONCardsString = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/classes/";
+    private final String JSON_BASE_QUERY_URL = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/classes/";
     // Some spinner have a "all races" or "all factions" item so we use a pattern to identify a lack of choice
-    private final String leftBlankPattern = "All";
+    private final String LEFT_EMPTY_PATTERN = "All";
     // Hearthstone API key from https://market.mashape.com/omgvamp/hearthstone
-    private final String myKey = "ZhgRNoSBpRmshex0Y18bLAH9QUkap1O9zuZjsnTN2dZT2KFx3e";
+    private final String API_KEY_HEADER = "X-Mashape-Key";
+    private final String API_KEY = "ZhgRNoSBpRmshex0Y18bLAH9QUkap1O9zuZjsnTN2dZT2KFx3e";
     // Hearthstone static datas
     // TODO think about import it automatically via GET info REST API
     // TODO Didn't do it yet because some informations were useless or unworkable
     private final String[] cardTypes = new String[]{
-            leftBlankPattern,
+            LEFT_EMPTY_PATTERN,
             "Hero",
             "Minion",
             "Spell",
@@ -54,7 +57,7 @@ public class CartesActivity extends AppCompatActivity {
             "Weapon",
             "Hero Power"};
     private final String[] cardSets = new String[]{
-            leftBlankPattern,
+            LEFT_EMPTY_PATTERN,
             "Basic",
             "Classic",
             "Promo",
@@ -77,7 +80,7 @@ public class CartesActivity extends AppCompatActivity {
             "System",
             "Debug"};
     private final String[] cardRaces = new String[]{
-            leftBlankPattern,
+            LEFT_EMPTY_PATTERN,
             "Demon",
             "Dragon",
             "Elemental",
@@ -100,7 +103,7 @@ public class CartesActivity extends AppCompatActivity {
             "Dream",
             "Neutral"};
     private final String[] cardRaretes = new String[]{
-            leftBlankPattern,
+            LEFT_EMPTY_PATTERN,
             "Free",
             "Common",
             "Rare",
@@ -180,7 +183,7 @@ public class CartesActivity extends AppCompatActivity {
                     // We will hide the snack bar or loading bar on JSON response
                     progressBar.setVisibility(View.VISIBLE);
                     // Build the url from the user input and the given url
-                    String url = JSONCardsString + classeSpinner.getSelectedItem().toString();
+                    String url = JSON_BASE_QUERY_URL + classeSpinner.getSelectedItem().toString();
                     try {
                         requestJSONCards(url);
                     } catch (TransactionTooLargeException e) {
@@ -209,15 +212,11 @@ public class CartesActivity extends AppCompatActivity {
                         cardsToSort.addAll(cardsFromJSON);
                         sortCardsByInput(cardsToSort);
 
-                        // TODO When there are too much datas to parcel between Activity, there is a TransactionTooLargeException
-                        // TODO Right now, we're just removing some Carte from the Arraylist
-                        // TODO So some results will not appear if the result is too large
-                        // TODO Display Toast
-                        if (cardsToSort.size() > 500) {
-                            List<Carte> cutOutList = new ArrayList<>(cardsToSort.subList(0, 500));
+                        if (cardsToSort.size() > MAX_CARDS_TO_PASS) {
+                            List<Carte> cutOutList = new ArrayList<>(cardsToSort.subList(0, MAX_CARDS_TO_PASS));
                             cardsToSort.clear();
                             cardsToSort.addAll(cutOutList);
-                            Toast.makeText(CartesActivity.this, "Too many cards. Show only 500.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CartesActivity.this, "Too many cards. Show only " + MAX_CARDS_TO_PASS, Toast.LENGTH_SHORT).show();
                         }
 
                         loadDisplayQueryActivity(cardsToSort);
@@ -229,19 +228,18 @@ public class CartesActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(CartesActivity.this, "ERROR. " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CartesActivity.this, "Check your internet connection", Toast.LENGTH_SHORT).show();
                         // hide the loading bar
-                        Log.d("ERROR", "error => " + error.toString());
-                        Toast.makeText(CartesActivity.this, "ERROR. " + error.toString(), Toast.LENGTH_LONG).show();
                         progressBar.setVisibility(View.GONE);
                         isLoadingJSON = false;
-
                     }
                 }
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("X-Mashape-Key", myKey);
+                params.put(API_KEY_HEADER, API_KEY);
                 return params;
             }
         };
@@ -255,7 +253,7 @@ public class CartesActivity extends AppCompatActivity {
         for (Carte c : cardsToReturn) {
             parcelableCards.add(c);
         }
-        myIntent.putExtra("cards", (Parcelable) parcelableCards);
+        myIntent.putExtra(DisplayQueryActivity.CARDS_LIST_INTENT_INDEX, (Parcelable) parcelableCards);
         CartesActivity.this.startActivity(myIntent);
     }
 
@@ -287,10 +285,10 @@ public class CartesActivity extends AppCompatActivity {
         String selectedRarity = raritySpinner.getSelectedItem().toString().trim();
 
         if (selectedName.length() > 0) checkName = true;
-        if (selectedType != leftBlankPattern) checkType = true;
-        if (selectedSet != leftBlankPattern) checkSet = true;
-        if (selectedRace != leftBlankPattern) checkRace = true;
-        if (selectedRarity != leftBlankPattern) checkRarity = true;
+        if (selectedType != LEFT_EMPTY_PATTERN) checkType = true;
+        if (selectedSet != LEFT_EMPTY_PATTERN) checkSet = true;
+        if (selectedRace != LEFT_EMPTY_PATTERN) checkRace = true;
+        if (selectedRarity != LEFT_EMPTY_PATTERN) checkRarity = true;
 
         for (int i = 0; i < toSort.size(); i++) {
             Carte c = toSort.get(i);

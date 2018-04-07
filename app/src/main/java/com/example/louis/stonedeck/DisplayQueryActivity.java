@@ -17,6 +17,9 @@ import java.util.List;
 
 public class DisplayQueryActivity extends AppCompatActivity {
 
+    public static final String CARDS_LIST_INTENT_INDEX = "cards";
+    public static final String CARD_INTENT_INDEX = "card";
+
     private final String[] availableSorts = new String[]{"Name", "Cost", "Attack", "Health"};
     private final int nameSortIndex = 0;
     private final int costSortIndex = 1;
@@ -41,7 +44,7 @@ public class DisplayQueryActivity extends AppCompatActivity {
         spinnerSortChoice.setAdapter(aa);
 
 
-        cards = this.getIntent().getExtras().getParcelable("cards");
+        cards = this.getIntent().getExtras().getParcelable(DisplayQueryActivity.CARDS_LIST_INTENT_INDEX);
         // Populating cards data into Listview
         mAdapter = new CarteAdapter(this, cards);
         listView.setAdapter(mAdapter);
@@ -51,7 +54,8 @@ public class DisplayQueryActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (cards.get(position) != null) {
                     Intent myIntent = new Intent(DisplayQueryActivity.this, DisplayCarteActivity.class);
-                    myIntent.putExtra("card", (Parcelable) cards.get(position));
+                    // Pass the card object through the intent
+                    myIntent.putExtra(DisplayQueryActivity.CARD_INTENT_INDEX, (Parcelable) cards.get(position));
                     DisplayQueryActivity.this.startActivity(myIntent);
                 }
             }

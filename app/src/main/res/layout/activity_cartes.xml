@@ -26,7 +26,8 @@
         android:text="Quality"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/separator2" />
+        app:layout_constraintTop_toTopOf="@+id/separator2"
+        android:layout_marginRight="32dp" />
 
     <TextView
         android:id="@+id/textViewClasseCarte"
@@ -37,7 +38,8 @@
         android:text="Class"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator2" />
+        app:layout_constraintTop_toBottomOf="@+id/separator2"
+        android:layout_marginLeft="32dp" />
 
     <TextView
         android:id="@+id/texViewRaceCarte"
@@ -48,7 +50,8 @@
         android:text="Race"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator1" />
+        app:layout_constraintTop_toBottomOf="@+id/separator1"
+        android:layout_marginRight="32dp" />
 
     <TextView
         android:id="@+id/textViewSetCarte"
@@ -59,7 +62,8 @@
         android:text="Set"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator1" />
+        app:layout_constraintTop_toBottomOf="@+id/separator1"
+        android:layout_marginLeft="32dp" />
 
     <TextView
         android:id="@+id/textViewTypeCarte"
@@ -70,7 +74,8 @@
         android:text="Type"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="32dp" />
 
     <EditText
         android:id="@+id/editTextNomCarte"
@@ -81,7 +86,8 @@
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewNomCarte" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewNomCarte"
+        android:layout_marginLeft="32dp" />
 
     <Spinner
         android:id="@+id/spinnerTypeCarte"
@@ -90,7 +96,8 @@
         android:layout_marginEnd="32dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTypeCarte" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewTypeCarte"
+        android:layout_marginRight="32dp" />
 
     <Spinner
         android:id="@+id/spinnerSetCarte"
@@ -99,7 +106,8 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewSetCarte" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewSetCarte"
+        android:layout_marginLeft="32dp" />
 
     <Spinner
         android:id="@+id/spinnerClasseCarte"
@@ -108,7 +116,8 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewClasseCarte" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewClasseCarte"
+        android:layout_marginLeft="32dp" />
 
     <Spinner
         android:id="@+id/spinnerRaceCarte"
@@ -117,7 +126,8 @@
         android:layout_marginEnd="32dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/texViewRaceCarte" />
+        app:layout_constraintTop_toBottomOf="@+id/texViewRaceCarte"
+        android:layout_marginRight="32dp" />
 
     <Spinner
         android:id="@+id/spinnerRareteCarte"
@@ -126,7 +136,8 @@
         android:layout_marginEnd="32dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewRareteCarte" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewRareteCarte"
+        android:layout_marginRight="32dp" />
 
     <View
         android:id="@+id/separator1"
@@ -140,7 +151,8 @@
         android:background="#90909090"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNomCarte" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextNomCarte"
+        tools:ignore="UnknownId" />
 
     <View
         android:id="@+id/separator2"
@@ -154,7 +166,8 @@
         android:background="#90909090"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerSetCarte" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSetCarte"
+        tools:ignore="UnknownId" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton"
@@ -166,7 +179,8 @@
         app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_search_category_default" />
+        app:srcCompat="@android:drawable/ic_search_category_default"
+        android:layout_marginRight="24dp" />
 
     <ProgressBar
         android:id="@+id/progressBar"

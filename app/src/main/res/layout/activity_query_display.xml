@@ -15,7 +15,8 @@
         android:text="Sort by"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="16dp" />
 
     <Spinner
         android:id="@+id/spinnerSortChoice"
@@ -24,7 +25,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="16dp" />
 
     <ListView
         android:id="@+id/cards_list"

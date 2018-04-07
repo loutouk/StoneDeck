@@ -16,10 +16,14 @@ import java.util.ArrayList;
 
 public class DeckActivity extends AppCompatActivity {
 
+    // Used to separate the deck name and the informations about it
+    // Should not be contains in the deck name
+    public static final String DECK_NAME_SEPARATOR = "-";
+
     private DeckCollection deckCollection;
     private ListView lv;
     private DeckAdapter arrayAdapter;
-    private ArrayList<Deck> deckList;
+    private ArrayList<Deck> decksList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,20 +32,20 @@ public class DeckActivity extends AppCompatActivity {
 
         lv = (ListView) findViewById(R.id.listViewDecks);
         deckCollection = new DeckCollection();
-        deckList = new ArrayList<>();
-        arrayAdapter = new DeckAdapter(this, deckList);
+        decksList = new ArrayList<>();
+        arrayAdapter = new DeckAdapter(this, decksList);
         lv.setAdapter(arrayAdapter);
 
         DeckCollection sauvegarde = DeckManagerSingleton.getInstance().load(getBaseContext());
 
         // No save file
         if (sauvegarde == null) {
-            Toast.makeText(getBaseContext(), "No deck found !", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "No deck found !", Toast.LENGTH_SHORT).show();
         }
         // Load save file
         else {
             deckCollection = sauvegarde;
-            deckList.addAll(deckCollection.getDecks());
+            decksList.addAll(deckCollection.getDecks());
             arrayAdapter.notifyDataSetChanged();
         }
 
@@ -52,15 +56,31 @@ public class DeckActivity extends AppCompatActivity {
                 String deckName = textViewDeckName.getText().toString().trim();
                 // Cant create a deck with empty name
                 if (deckName != null && deckName.length() > 0) {
-                    // Empty the field
-                    textViewDeckName.setText("");
-                    Deck newDeck = new Deck(deckName);
-                    deckCollection.addDeck(newDeck);
-                    DeckManagerSingleton.getInstance().save(deckCollection, getBaseContext());
-                    deckList.add(newDeck);
-                    arrayAdapter.notifyDataSetChanged();
+
+                    if(deckName.contains(DeckActivity.DECK_NAME_SEPARATOR)){
+                        Toast.makeText(getBaseContext(), "Please don't use " + DeckActivity.DECK_NAME_SEPARATOR + " in the deck name", Toast.LENGTH_SHORT).show();
+                    }else{
+                        // Each deck has to have a unique name in order to delete them safely
+                        boolean nameAlreadyExists = false;
+                        for(Deck d : decksList){
+                            if(d.getName().equals(deckName)){
+                                nameAlreadyExists = true;
+                            }
+                        }
+                        if(nameAlreadyExists){
+                            Toast.makeText(getBaseContext(), deckName + " already exists !", Toast.LENGTH_SHORT).show();
+                        }else{
+                            // Empty the field
+                            textViewDeckName.setText("");
+                            Deck newDeck = new Deck(deckName);
+                            deckCollection.addDeck(newDeck);
+                            DeckManagerSingleton.getInstance().save(deckCollection, getBaseContext());
+                            decksList.add(newDeck);
+                            arrayAdapter.notifyDataSetChanged();
+                        }
+                    }
                 } else {
-                    Toast.makeText(getBaseContext(), "Enter a deck name", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), "Enter a deck name", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -68,18 +88,22 @@ public class DeckActivity extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (deckList.get(position) != null) {
+                if (decksList.get(position) != null) {
                     Intent myIntent = new Intent(DeckActivity.this, DisplayQueryActivity.class);
                     CartesList parcelableCards = new CartesList();
-                    for (Carte c : deckList.get(position).getCards()) {
+                    for (Carte c : decksList.get(position).getCards()) {
                         parcelableCards.add(c);
                     }
-                    myIntent.putExtra("cards", (Parcelable) parcelableCards);
+                    myIntent.putExtra(DisplayQueryActivity.CARDS_LIST_INTENT_INDEX, (Parcelable) parcelableCards);
                     DeckActivity.this.startActivity(myIntent);
                 }
             }
         });
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // TODO reload the deck
+    }
 }

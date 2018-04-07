@@ -25,12 +25,12 @@ public class Deck implements Serializable {
         this.name = name;
     }
 
-    public void addCard(Carte card) {
-        this.cards.add(card);
+    public boolean addCard(Carte card) {
+        return this.cards.add(card);
     }
 
-    public void removeCard(Carte card) {
-        this.cards.remove(card);
+    public boolean removeCard(Carte card) {
+        return this.cards.remove(card);
     }
 
     public ArrayList<Carte> getCards() {

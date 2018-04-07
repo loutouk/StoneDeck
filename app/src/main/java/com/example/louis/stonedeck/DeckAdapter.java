@@ -22,7 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeckAdapter extends ArrayAdapter<Deck> {
+public class DeckAdapter extends ArrayAdapter<Deck> implements View.OnClickListener{
 
     private Context mContext;
     private List<Deck> decksList = new ArrayList<>();
@@ -45,33 +45,52 @@ public class DeckAdapter extends ArrayAdapter<Deck> {
         }
 
         // Get the data item for this position
-        // TODO the final for the Deck is dirty coding in order to dell the Deck when user click on the corresponding bin
-        // TODO see problems when a ListView has got clickable items like button, it lost its clickability
-        final Deck currentDeck = decksList.get(position);
+        Deck currentDeck = decksList.get(position);
 
         TextView deckName = (TextView) listItem.findViewById(R.id.textViewDeckName);
         int cardsNumber = currentDeck.getCards() != null ? currentDeck.getCards().size() : 0;
         String cardWord = cardsNumber > 1 ? " cards" : " card";
-        deckName.setText(currentDeck.getName() + " - " + currentDeck.getCards().size() + cardWord);
+        deckName.setText(currentDeck.getName() + " " + DeckActivity.DECK_NAME_SEPARATOR + " " + currentDeck.getCards().size() + cardWord);
 
         ImageView img = (ImageView) listItem.findViewById(R.id.imageViewDellDeck);
 
-        img.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Deck toRemove = currentDeck;
-                if(toRemove != null){
-                    DeckCollection sauvegarde = DeckManagerSingleton.getInstance().load(mContext);
-                    sauvegarde.removeDeck(toRemove);
-                    DeckManagerSingleton.getInstance().save(sauvegarde, mContext);
-                    decksList.remove(toRemove);
-                    Toast.makeText(mContext, toRemove.getName() + " removed", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+        img.setOnClickListener(this);
 
         this.notifyDataSetChanged();
 
         // Return the completed view to render on screen
         return listItem;
+    }
+
+    @Override
+    public void onClick(View view) {
+        View imgView = view;
+        // We need to wind up to the parent in order to access the deck name
+        View listItem = (View) imgView.getParent();
+
+        if(listItem == null){
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            listItem = inflater.inflate(R.layout.deck_item, null);
+        }
+
+        TextView deckNameTxtView = (TextView) listItem.findViewById(R.id.textViewDeckName);
+        String toRemoveName = deckNameTxtView.getText().toString().trim();
+        // We customized the text previsoulsy
+        // So we have to retrieve the part correspinding to the deck name only
+        toRemoveName = toRemoveName.split(DeckActivity.DECK_NAME_SEPARATOR)[0].trim();
+        for(Deck d : decksList){
+            if(d.getName().equals(toRemoveName)){
+                // Remove from the list
+                decksList.remove(d);
+                // Remove from the save file
+                DeckCollection sauvegarde = DeckManagerSingleton.getInstance().load(mContext);
+                sauvegarde.removeDeck(d);
+                DeckManagerSingleton.getInstance().save(sauvegarde, mContext);
+                Toast.makeText(mContext, toRemoveName + " removed", Toast.LENGTH_SHORT).show();
+                // update the display
+                this.notifyDataSetChanged();
+                break;
+            }
+        }
     }
 }

@@ -63,7 +63,7 @@ public class DisplayCarteActivity extends AppCompatActivity {
         }
 
 
-        // Adding the card to the selected deck when the user click on the corresponding button
+        // Adding the card from the selected deck when the user click on the corresponding button
         Button addButton = (Button) findViewById(R.id.buttonAddCardDeck);
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -73,11 +73,38 @@ public class DisplayCarteActivity extends AppCompatActivity {
                     for (Deck d : deckCollection.getDecks()) {
                         if (d.getName().trim().equals(spinner.getSelectedItem().toString().trim())) {
                             // Add the card to the deck
-                            d.addCard(card);
-                            // Save to the file
-                            DeckManagerSingleton.getInstance().save(deckCollection, getBaseContext());
-                            Toast.makeText(DisplayCarteActivity.this, card.getName() + " added to " + spinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                            boolean addSuccessful = d.addCard(card);
+                            if(addSuccessful){
+                                // Save to the file
+                                DeckManagerSingleton.getInstance().save(deckCollection, getBaseContext());
+                                Toast.makeText(DisplayCarteActivity.this,card.getName() + " added to " + spinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(DisplayCarteActivity.this, "Can't add " + card.getName() + " to " + spinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
+        // Removing the card from the selected deck when the user click on the corresponding button
+        Button dellButton = (Button) findViewById(R.id.buttonDellCardDeck);
+        dellButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                DeckCollection deckCollection = DeckManagerSingleton.getInstance().load(getBaseContext());
+                if (deckCollection != null) {
+                    // Search the deck from the serialized file by checking their names with the selected one from spinner
+                    for (Deck d : deckCollection.getDecks()) {
+                        if (d.getName().trim().equals(spinner.getSelectedItem().toString().trim())) {
+                            // Add the card to the deck
+                            boolean removeSuccessful = d.removeCard(card);
+                            if(removeSuccessful){
+                                // Save to the file
+                                DeckManagerSingleton.getInstance().save(deckCollection, getBaseContext());
+                                Toast.makeText(DisplayCarteActivity.this,card.getName() + " removed from " + spinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(DisplayCarteActivity.this, "Can't remove " + card.getName() + " from " + spinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 }
