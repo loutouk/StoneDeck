@@ -105,5 +105,6 @@ public class DeckActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // TODO reload the deck
+        // TODO get removed cards as a return from intent
     }
 }

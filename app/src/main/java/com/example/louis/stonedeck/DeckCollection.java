@@ -1,7 +1,5 @@
 package com.example.louis.stonedeck;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -17,13 +15,13 @@ public class DeckCollection implements Serializable {
         decks.add(deck);
     }
 
-    public void removeDeck(Deck toRemove) {
+    public boolean removeDeck(Deck toRemove) {
         for (Deck aDeck : decks) {
             if (aDeck.getName().equals(toRemove.getName())) {
-                decks.remove(aDeck);
-                return;
+                return decks.remove(aDeck);
             }
         }
+        return false;
     }
 
     public ArrayList<Deck> getDecks() {

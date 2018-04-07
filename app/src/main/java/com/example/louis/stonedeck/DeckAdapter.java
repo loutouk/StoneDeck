@@ -84,11 +84,15 @@ public class DeckAdapter extends ArrayAdapter<Deck> implements View.OnClickListe
                 decksList.remove(d);
                 // Remove from the save file
                 DeckCollection sauvegarde = DeckManagerSingleton.getInstance().load(mContext);
-                sauvegarde.removeDeck(d);
-                DeckManagerSingleton.getInstance().save(sauvegarde, mContext);
-                Toast.makeText(mContext, toRemoveName + " removed", Toast.LENGTH_SHORT).show();
-                // update the display
-                this.notifyDataSetChanged();
+                boolean succes = sauvegarde.removeDeck(d);
+                if(succes){
+                    DeckManagerSingleton.getInstance().save(sauvegarde, mContext);
+                    Toast.makeText(mContext, toRemoveName + " removed", Toast.LENGTH_SHORT).show();
+                    // update the display
+                    this.notifyDataSetChanged();
+                }else{
+                    Toast.makeText(mContext,"Can't remove " + toRemoveName, Toast.LENGTH_SHORT).show();
+                }
                 break;
             }
         }
